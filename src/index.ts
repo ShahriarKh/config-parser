@@ -24,13 +24,19 @@ async function readSecret(name: string, keyName: string): Promise<ParsedItem> {
 }
 
 async function parseItem(item: Item, keyName: string): Promise<ParsedItem> {
-  const secret = item.secret
+  const valSecret = item.secret
     ? await readSecret(item.secret, keyName)
     : undefined;
-  const result = secret ?? readEnv(item.env);
+  const valSecretOrEnv = valSecret ?? readEnv(item.env);
+  const parseResult = item.schema.safeParse(valSecretOrEnv);
+  const result = parseResult.data as ParsedItem;
 
-  const parseResult = item.schema.safeParse(result);
-  logParseResult(parseResult, keyName);
+  logParseResult(
+    parseResult,
+    keyName,
+    item.schema._zod.optin === "defaulted",
+    item.schema._zod.optin === "optional" && result === undefined,
+  );
 
   return result;
 }
