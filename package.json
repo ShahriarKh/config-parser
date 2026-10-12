@@ -1,0 +1,49 @@
+{
+  "name": "@shahriarkh/config-parser",
+  "version": "0.1.0",
+  "description": "A TypeScript configuration parser with Zod validation",
+  "homepage": "https://github.com/shahriarkh/config-parser#readme",
+  "bugs": {
+    "url": "https://github.com/shahriarkh/config-parser/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shahriarkh/config-parser.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "tsdown",
+    "pack": "bun pm pack",
+    "prepublishOnly": "bun run build && bun run typecheck",
+    "publish": "npm publish --access public"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "bun-types": "^1.4.0",
+    "oxfmt": "^0.72.0",
+    "oxlint": "^1.87.0",
+    "tsdown": "^0.23.1",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "zod": "^4.0.0"
+  }
+}

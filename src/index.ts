@@ -1,0 +1,73 @@
+import { readFile } from "node:fs/promises";
+
+import { logCantReadSecret, logParseResult } from "./loggers.js";
+import type { Config, Item, ParsedConfig, ParsedItem } from "./types.js";
+
+const defautlSecretsDir = "/run/secrets";
+let secretsDirectory: string;
+
+function readEnv(name: string): ParsedItem {
+  return process.env[name];
+}
+
+async function readSecret(name: string, keyName: string): Promise<ParsedItem> {
+  // to fix trailing slash
+  const path = secretsDirectory.replace(/\/?$/, "/") + name;
+
+  // TODO base64 encoding?
+  try {
+    return (await readFile(path, "utf8")).trim();
+  } catch {
+    logCantReadSecret(path, keyName);
+    return undefined;
+  }
+}
+
+async function parseItem(item: Item, keyName: string): Promise<ParsedItem> {
+  const secret = item.secret
+    ? await readSecret(item.secret, keyName)
+    : undefined;
+  const result = secret ?? readEnv(item.env);
+
+  const parseResult = item.schema.safeParse(result);
+  logParseResult(parseResult, keyName);
+
+  return result;
+}
+
+async function parseConfig(
+  config: Config,
+  parentKey: string = "",
+): Promise<ParsedConfig> {
+  return Object.fromEntries(
+    await Promise.all(
+      Object.entries(config).map(async ([key, val]) => {
+        const fullKey = parentKey ? `${parentKey}.${key}` : key;
+        return [
+          key,
+          "schema" in val
+            ? await parseItem(val as Item, fullKey)
+            : await parseConfig(val as Config, fullKey),
+        ];
+      }),
+    ),
+  );
+}
+
+export async function readZodConfig({
+  config,
+  // showLogs = true,
+  secretsDir,
+}: {
+  config: Config;
+  // showLogs?: boolean;
+  secretsDir?: string;
+}) {
+  secretsDirectory = secretsDir ?? defautlSecretsDir;
+  console.log("⚙️  Reading config...");
+  const finalConfig = await parseConfig(config);
+  // console.log(finalConfig);
+  return finalConfig;
+}
+
+export type { Config } from "./types.js";

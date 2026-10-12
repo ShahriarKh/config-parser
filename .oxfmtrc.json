@@ -1,0 +1,20 @@
+{
+  "printWidth": 80,
+  "singleQuote": false,
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "htmlWhitespaceSensitivity": "css",
+  "ignorePatterns": [],
+  "proseWrap": "always",
+  "quoteProps": "as-needed",
+  "semi": true,
+  "sortPackageJson": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false,
+  "sortImports": {
+    "order": "asc"
+  }
+}
