@@ -48,8 +48,8 @@ and are not using files.
 ```ts
 const appConfig: Config = {
   apiKey: {
-    secret: "/keys/api_key", // read from `/path/to/secrets/keys/api_key`
-    env: "API_KEY", // read from process.env.API_KEY if secret file can't be read
+    secret: "/keys/api_key",    // read from `/path/to/secrets/keys/api_key`
+    env: "API_KEY",             // read from process.env.API_KEY if secret file can't be read
     schema: z.string().min(10), // zod schema to validate
   },
 };
@@ -62,7 +62,7 @@ or wherever you think is the best.
 
 ```ts
 const myAppConfig = readZodConfig({
-  config: configFile,
+  config: configObject,
   secretsDir: "/path/to/secrets",
 });
 ```

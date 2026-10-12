@@ -6,7 +6,7 @@
   "bracketSpacing": true,
   "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "css",
-  "ignorePatterns": [],
+  "ignorePatterns": ["*.md"],
   "proseWrap": "always",
   "quoteProps": "as-needed",
   "semi": true,
