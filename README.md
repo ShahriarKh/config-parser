@@ -29,7 +29,7 @@ const exampleConfig: Config = {
   },
 };
 
-const config = readZodConfig({ config: exampleConfig });
+const config = await readZodConfig({ config: exampleConfig });
 
 // access values from the object
 console.log(config.db.name);
