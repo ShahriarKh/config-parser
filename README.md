@@ -31,3 +31,9 @@ const exampleConfig: Config = {
 
 const config = readZodConfig({ config: exampleConfig });
 ```
+
+# Development
+
+```sh
+npm publish --access public
+```

@@ -1,6 +1,6 @@
 {
   "name": "@shahriarkh/config-parser",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A TypeScript configuration parser with Zod validation",
   "homepage": "https://github.com/shahriarkh/config-parser#readme",
   "bugs": {
@@ -32,8 +32,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "tsdown",
     "pack": "bun pm pack",
-    "prepublishOnly": "bun run build && bun run typecheck",
-    "publish": "npm publish --access public"
+    "prepublishOnly": "bun run build && bun run typecheck"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
