@@ -1,6 +1,6 @@
 {
   "name": "@shahriarkh/config-parser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A TypeScript configuration parser with Zod validation",
   "homepage": "https://github.com/shahriarkh/config-parser#readme",
   "bugs": {
