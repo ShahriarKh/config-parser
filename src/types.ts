@@ -17,3 +17,30 @@ export type ParsedItem = string | number | boolean | bigint | undefined;
 export type ParsedConfig = {
   [name: string]: ParsedItem | ParsedConfig;
 };
+
+export type ReadZodConfigOptions = {
+  showLogs: boolean;
+  secretsDir: string;
+};
+
+export type ComposeStyle =
+  | "list"
+  | "mapping-no-value"
+  | "mapping"
+  | "interpolation"
+  | "substitution";
+
+export type EnvGeneratorOptions = {
+  outputFile: string;
+  showInTerminal: boolean;
+  createFile: boolean;
+};
+
+export type ComposeGeneratorOptions = {
+  outputFile: string;
+  showInTerminal: boolean;
+  createFile: boolean;
+  style: ComposeStyle;
+  envForSecrets: boolean;
+  addComments: boolean;
+};
