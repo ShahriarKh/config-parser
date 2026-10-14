@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { logCantReadSecret, logParseResult, logStart } from "./loggers.js";
 import type {
   Config,
+  InferConfig,
   Item,
   ParsedConfig,
   ParsedItem,
@@ -76,17 +77,17 @@ const defaultOptions: ReadZodConfigOptions = {
   secretsDir: "/run/secrets",
 };
 
-export async function readZodConfig(
-  config: Config,
+export async function readZodConfig<T extends Config>(
+  config: T,
   options?: Partial<ReadZodConfigOptions>,
-) {
+): Promise<InferConfig<T>> {
   const finalOptions = {
     ...defaultOptions,
     ...options,
   };
   logStart();
   const finalConfig = await parseConfig(config, "", finalOptions.secretsDir);
-  return finalConfig;
+  return finalConfig as InferConfig<T>;
 }
 
 export type { Config } from "./types.js";

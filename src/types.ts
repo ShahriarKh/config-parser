@@ -1,15 +1,21 @@
-import type { ZodType } from "zod/v4";
+import { z, type ZodType } from "zod/v4";
 
-export type Item = {
-  //<T extends z.ZodType = z.ZodType> = {
+export type Item<T extends ZodType = ZodType> = {
   env: string;
-  schema: ZodType; //T;
+  // schema: ZodType; //T;
+  schema: T;
   secret?: string;
 };
 
 export type Config = {
-  [x: string]: Item | Config;
+  [key: string]: Item | Config;
 };
+
+export type InferConfig<T> = T extends { schema: infer S extends ZodType }
+  ? z.infer<S>
+  : T extends object
+    ? { [K in keyof T]: InferConfig<T[K]> }
+    : never;
 
 // ParsedItem may be undefined. It's zod's role to validate it.
 export type ParsedItem = string | number | boolean | bigint | undefined;
@@ -43,4 +49,5 @@ export type ComposeGeneratorOptions = {
   style: ComposeStyle;
   envForSecrets: boolean;
   addComments: boolean;
+  externalSecrets: boolean;
 };
