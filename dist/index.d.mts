@@ -1,22 +1,22 @@
-import { ZodType } from "zod/v4";
+import { ZodType, z } from "zod/v4";
 //#region src/types.d.ts
-type Item = {
+type Item<T extends ZodType = ZodType> = {
   env: string;
-  schema: ZodType;
+  schema: T;
   secret?: string;
 };
 type Config = {
-  [x: string]: Item | Config;
+  [key: string]: Item | Config;
 };
-type ParsedItem = string | number | boolean | bigint | undefined;
-type ParsedConfig = {
-  [name: string]: ParsedItem | ParsedConfig;
+type InferConfig<T> = T extends {
+  schema: infer S extends ZodType;
+} ? z.infer<S> : T extends object ? { [K in keyof T]: InferConfig<T[K]>; } : never;
+type ReadZodConfigOptions = {
+  showLogs: boolean;
+  secretsDir: string;
 };
 //#endregion
 //#region src/index.d.ts
-export declare function readZodConfig({ config, secretsDir }: {
-  config: Config;
-  secretsDir?: string;
-}): Promise<ParsedConfig>;
+export declare function readZodConfig<T extends Config>(config: T, options?: Partial<ReadZodConfigOptions>): Promise<InferConfig<T>>;
 //#endregion
 export type { Config };

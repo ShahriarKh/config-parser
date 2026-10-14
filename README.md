@@ -11,7 +11,7 @@ import { readZodConfig, type Config } from "@shahriarkh/config-parser";
 
 import z from "zod";
 
-const exampleConfig: Config = {
+const exampleConfig = {
   port: {
     env: "PORT",
     schema: z.int(),
@@ -27,9 +27,9 @@ const exampleConfig: Config = {
       schema: z.string().min(1),
     },
   },
-};
+} satisfies Config;
 
-const config = await readZodConfig({ config: exampleConfig });
+const config = await readZodConfig(exampleConfig, { secretsDir: './custom/secrets' });
 
 // access values from the object
 console.log(config.db.name);
@@ -62,16 +62,10 @@ or wherever you think is the best.
 
 ```ts
 const myAppConfig = readZodConfig({
-  config: configObject,
+  config: appConfig,
   secretsDir: "/path/to/secrets",
 });
 ```
 
 Default secrets directory is `/run/secrets`. You can change it with a relative
 or an absolute path.
-
-# Development
-
-```sh
-npm publish --access public
-```

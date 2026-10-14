@@ -29,18 +29,17 @@
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "bun check",
     "build": "tsdown",
     "pack": "bun pm pack",
-    "prepublishOnly": "bun run build && bun run typecheck"
+    "prepublishOnly": "bun run build && bun check"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
     "bun-types": "^1.4.0",
     "oxfmt": "^0.72.0",
     "oxlint": "^1.87.0",
-    "tsdown": "^0.23.1",
-    "typescript": "^5.0.0"
+    "tsdown": "^0.23.1"
   },
   "peerDependencies": {
     "zod": "^4.0.0"
