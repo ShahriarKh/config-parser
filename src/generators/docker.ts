@@ -4,10 +4,6 @@ import { generateFile } from "./shared";
 
 const indent = "  "; // because \t is not allowed in YAML
 
-function parseSecret(item: Item, options: ComposeGeneratorOptions): string {
-  return "";
-}
-
 function parseEnv(item: Item, options: ComposeGeneratorOptions): string {
   const { style, envForSecrets, addComments } = options;
 
@@ -39,27 +35,35 @@ function parseEnv(item: Item, options: ComposeGeneratorOptions): string {
   }
 }
 
-function parseConfig(
+function parseConfigEnvs(
   config: Config,
   options: ComposeGeneratorOptions,
 ): Array<string> {
   return Object.values(config).flatMap((val) =>
     "schema" in val
       ? parseEnv(val as Item, options)
-      : parseConfig(val as Config, options),
+      : parseConfigEnvs(val as Config, options),
   );
 }
 
-// function parseConfig2(
-//   config: Config,
-//   options: ComposeGeneratorOptions,
-// ): Array<string> {
-//   return Object.values(config).flatMap((val) =>
-//     "secret" in val
-//       ? parseSecret(val as Item, options)
-//       : parseConfig(val as Config, options),
-//   );
-// }
+function parseSecret(item: Item, options: ComposeGeneratorOptions): string {
+  const secretIndent = indent.repeat(3);
+
+  return secretIndent + "- " + item.secret!;
+}
+
+function parseConfigSecrets(
+  config: Config,
+  options: ComposeGeneratorOptions,
+): Array<string> {
+  return Object.values(config).flatMap((val) =>
+    "schema" in val
+      ? "secret" in val
+        ? parseSecret(val as Item, options)
+        : []
+      : parseConfigSecrets(val as Config, options),
+  );
+}
 
 function createFileContent(envs: string, secrets: string) {
   return [
@@ -67,7 +71,7 @@ function createFileContent(envs: string, secrets: string) {
     indent + "example:",
     indent + indent + "environment:",
     envs,
-    "secrets:",
+    indent + indent + "secrets:",
     secrets,
   ].join("\n");
 }
@@ -79,6 +83,7 @@ const defaultOptions: ComposeGeneratorOptions = {
   style: "list",
   envForSecrets: false,
   addComments: true,
+  externalSecrets: true,
 };
 
 export function generateDockerComposeExample(
@@ -90,11 +95,10 @@ export function generateDockerComposeExample(
     ...options,
   };
 
-  const envs = parseConfig(config, finalOptions).join("\n");
-  // TODO
-  // const secrets = parseConfig2(config, finalOptions).join("\n");
+  const envs = parseConfigEnvs(config, finalOptions).join("\n");
+  const secrets = parseConfigSecrets(config, finalOptions).join("\n");
 
-  const content = createFileContent(envs, "");
+  const content = createFileContent(envs, secrets);
 
   if (finalOptions.showInTerminal) logContent(content, "compose");
 
