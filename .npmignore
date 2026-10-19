@@ -1,0 +1,23 @@
+# Source and development files (the published package is dist + README).
+src/
+tests/
+.github/
+.bun-temp/
+.test/
+
+# Tooling and repository metadata.
+.git/
+.gitignore
+.gitattributes
+.oxfmtrc.json
+bun.lock
+bun.lockb
+tsconfig.json
+tsdown.config.ts
+
+# Local and CI-only files.
+.env
+.env.*
+!.env.example
+*.log
+*.tgz

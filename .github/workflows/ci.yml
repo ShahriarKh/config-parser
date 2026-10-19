@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify (Bun)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check formatting
+        run: bun run format:check
+
+      - name: Type-check
+        run: bun run typecheck
+
+      - name: Build package
+        run: bun run build
+
+      - name: Verify npm package contents
+        run: |
+          bun pm pack
+          PACKAGE_ARCHIVE="$(find . -maxdepth 1 -name '*.tgz' -print -quit)"
+          test -n "$PACKAGE_ARCHIVE"
+          tar -tzf "$PACKAGE_ARCHIVE"
