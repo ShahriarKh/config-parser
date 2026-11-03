@@ -3,5 +3,5 @@ node_modules/
 *.tgz
 .test/
 TODO.md
-.npmrc
 .env
+dist/
